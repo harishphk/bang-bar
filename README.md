@@ -1,46 +1,79 @@
 # Bang Bar
 
-Make searches and site lookups faster by using short commands called "bangs" directly from your browser.
+Make searches and site lookups faster using short commands called "bangs" directly from your browser. Inspired by the bangs feature of DuckDuckGo, Bang Bar allows you to jump straight to sites or search results in one keystroke.
 
-Bang Bar lets you jump straight to searches or sites by typing a short trigger followed by your terms.
+Supports all bangs(13k+) in DuckDuckGo but fully offline, private and ligtening fast.
 
-What you can do (user-friendly)
+Type a bang trigger followed by your search terms to go directly to the right site or search.
 
-- Use bangs from the address bar: type `!` then a short trigger and your search.
-- Use bangs while searching: start a search with a bang to be redirected to the right site.
-- Get helpful suggestions as you type so you can pick the right bang quickly.
-- If a bang isn't available, you get a normal web search so you always get results.
+---
 
-How to use
+## Features
 
-- From the address bar (omnibox):
-   - Type `!` then the bang trigger, a space, then your terms.
-   - Examples:
-      - `!g cats` → Google search for "cats"
-      - `!w JavaScript` → Wikipedia search for "JavaScript"
-      - `!gh copilot` → GitHub search for "copilot"
+* **Offline and private**: Fully offline and private.
+* **Omnibox Bangs**: Type `! + trigger + search terms` in the browser address bar and press Enter.
+* **OmniSearch**: Type `!!<space>`, then enter `trigger + search term` to activate suggestions and search directly from the omnibox; the extension redirects automatically.
+* **Smart Suggestions**: As you type, matching bangs appear for quick selection.
+* **Fallback Search**: If the bang isn’t recognized, Bang Bar performs a normal web search with DuckDuckGo.
 
-- Or just type `!trigger query` directly:
-   - Begin your query with a bang trigger (for example `!yt lo-fi beats`) and press Enter.
-   - The extension detects the bang and takes you directly to the matching site or search.
+### Common Bang Examples
 
-Common bangs (examples)
+| Trigger | Action           | Example           |
+| ------- | ---------------- | ----------------- |
+| `!g`    | Google search    | `!g weather`      |
+| `!w`    | Wikipedia search | `!w nodejs`       |
+| `!gh`   | GitHub search    | `!gh copilot`     |
+| `!yt`   | YouTube search   | `!yt lo-fi beats` |
 
-- `!g <terms>` — Google search (e.g. `!g weather`)
-- `!w <terms>` — Wikipedia search (e.g. `!w nodejs`)
-- `!gh <terms>` — GitHub search (e.g. `!gh copilot`)
-- `!yt <terms>` — YouTube search (e.g. `!yt lo-fi beats`)
+---
 
-What happens if a bang isn't recognized
+## How to Use
 
-- Bang Bar will perform a normal web search using your query so you still get useful results.
+### Activate Omnibox Bangs
 
-Tips
+1. Click on the address bar.
+2. Type `!` followed by a bang trigger and your search terms.
+3. Press Enter to go directly to the site or search.
 
-- Start with `!` in the address bar to see suggestions and commonly used bangs.
-- Use the arrow keys to select a suggestion before pressing Enter.
+**Examples:**
 
-Need help?
+* `!g cats` → Google search
+* `!w JavaScript` → Wikipedia search
+* `!yt lo-fi beats` → YouTube search
 
-- Reinstall or update the extension from your browser's extensions/settings if something doesn't behave as expected.
-- If you still need help, include your browser name/version and a short description while creating an github issue
+### Activate OmniSearch
+
+1. Click on the address bar.
+2. Type `!! + <space> + your query`.
+3. Bang Bar shows suggestions for matching bangs.
+4. Select a suggestion or press Enter to search.
+
+> Tip: Using `!!` + space in the omnibox is the easiest and most reliable way to activate OmniSearch.
+
+---
+
+## Tips
+
+* Start with `!!<space>` in the address bar to see suggestions.
+* Use arrow keys to select suggestions before pressing Enter.
+
+---
+
+## Supported Browsers
+
+| Browser | Notes          |
+| ------- | -------------- |
+| Chrome  | ✅ Full support |
+| Edge    | ✅ Full support |
+| Brave   | ✅ Full support |
+| Opera   | ✅ Full support |
+| Vivaldi | ✅ Full support |
+
+> Firefox is not supported yet due to differences in omnibox APIs.
+
+---
+
+## Need Help?
+
+* Reinstall or update the extension if something doesn’t work.
+* Open a GitHub issue with your **browser version** and a short description of the problem.
