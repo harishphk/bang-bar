@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Bang Bar",
+  "version": "1.0.0",
+  "description": "DuckDuckGo-style bangs without pressing Tab",
+  "author": "Harish Kumar",
+  "permissions": [
+    "storage",
+    "tabs",
+    "webNavigation",
+    "omnibox"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/search.png"
+  },
+  "omnibox": {
+    "keyword": "!"
+  },
+  "web_accessible_resources": [{
+    "resources": ["bangs.json"],
+    "matches": ["<all_urls>"]
+  }]
+}
