@@ -6,13 +6,13 @@
 let bangsMap = {};
 
 // -----------------------------
-// Load bangs.json on install or update
+// Pre-load bangs immediately when service worker starts
+// Critical for MV3: Service workers restart frequently
+// This handles all cases: install, update, and SW wake-up
 // -----------------------------
-chrome.runtime.onInstalled.addListener(async (details) => {
-  if (details.reason === "install" || details.reason === "update") {
-    await loadBangsData();
-  }
-});
+(async () => {
+  await loadBangsData();
+})();
 
 // -----------------------------
 // Load bangs data into memory and storage
@@ -86,7 +86,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
     const url = new URL(details.url);
     const query = extractQuery(url);
 
-    if (query && query.startsWith("!")) {
+    if (query && query.trim().startsWith("!")) {
       const redirectUrl = await processBangQuery(query);
       if (redirectUrl) {
         await safeRedirect(details.tabId, redirectUrl);
@@ -105,18 +105,19 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
 chrome.omnibox.onInputChanged.addListener(async (text, suggest) => {
   if (!text.trim()) return;
 
-  const { bangs } = await chrome.storage.local.get("bangs");
-  const searchTerms = text.split(" ").slice(1).join(" ");
-  const bangTrigger = text.split(" ")[0];
+  // Normalize input
+  const normalizedText = text.trim().replace(/\s+/g, " ");
+  const parts = normalizedText.split(" ");
+  const bangTrigger = parts[0];
+  const searchTerms = parts.slice(1).join(" ");
 
-  const suggestions = Object.entries(bangs || {})
+  // Use in-memory cache for instant suggestions
+  const suggestions = Object.entries(bangsMap)
     .filter(([trigger]) => trigger.startsWith(bangTrigger))
-    .slice(0, 5)
+    .slice(0, 8) // Increased from 5 to 8 for better UX
     .map(([trigger, bang]) => ({
       content: `${trigger} ${searchTerms}`,
-      description: `${bang.description || bang.domain}: ${bang.trigger} - ${
-        bang.domain
-      }`.replace(new RegExp(`(${bangTrigger})`, "gi"), "<match>$1</match>"),
+      description: `<match>!${trigger}</match> ${bang.description || bang.domain} <dim>(${bang.domain})</dim>`
     }));
 
   suggest(suggestions);
@@ -128,7 +129,10 @@ chrome.omnibox.onInputChanged.addListener(async (text, suggest) => {
 // - Redirects current tab or opens new tab
 // -----------------------------
 chrome.omnibox.onInputEntered.addListener(async (text) => {
-  const redirectUrl = await processBangQuery(text, true);
+  const normalizedText = text.trim();
+  if (!normalizedText) return;
+  
+  const redirectUrl = await processBangQuery(normalizedText, true);
   if (redirectUrl) {
     await safeRedirect(undefined, redirectUrl);
   }
@@ -136,12 +140,14 @@ chrome.omnibox.onInputEntered.addListener(async (text) => {
 
 // -----------------------------
 // Process a bang query
-// - Looks up bang in stored bangs
+// - Looks up bang in memory cache (faster than storage)
 // - Returns redirect URL
 // - isOmniSearch: whether input came from omnibox
 // -----------------------------
 async function processBangQuery(query, isOmniSearch = false) {
-  const parts = query.split(" ");
+  // Trim and normalize whitespace
+  const normalizedQuery = query.trim().replace(/\s+/g, " ");
+  const parts = normalizedQuery.split(" ");
   const bangTrigger = isOmniSearch
     ? parts[0] // Omnibox: "!yt"
     : parts[0].substring(1); // Search bar: strip "!" from "!yt"
@@ -149,8 +155,9 @@ async function processBangQuery(query, isOmniSearch = false) {
   if (!bangTrigger) return null;
 
   const searchTerms = parts.slice(1).join(" ");
-  const { bangs } = await chrome.storage.local.get("bangs");
-  const bang = (bangs || {})[bangTrigger];
+  
+  // Use in-memory cache instead of storage for better performance
+  const bang = bangsMap[bangTrigger];
 
   if (bang && bang.url) {
     // Replace placeholder with search terms
@@ -159,7 +166,7 @@ async function processBangQuery(query, isOmniSearch = false) {
 
   // Fallback to DuckDuckGo if bang not found
   console.warn(`Bang "${bangTrigger}" not found, redirecting to DuckDuckGo`);
-  return `https://duckduckgo.com/?q=${encodeURIComponent(query)}`;
+  return `https://duckduckgo.com/?q=${encodeURIComponent(normalizedQuery)}`;
 }
 
 // -----------------------------
