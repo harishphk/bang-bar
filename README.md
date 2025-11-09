@@ -29,6 +29,11 @@ Type a bang trigger followed by your search terms to go directly to the right si
 
 ## How to Use
 
+
+https://github.com/user-attachments/assets/412e2aeb-710d-4662-9568-ba4d8137331b
+
+
+
 ### Activate Omnibox Bangs
 
 1. Click on the address bar.
